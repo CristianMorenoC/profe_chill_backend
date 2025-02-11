@@ -180,9 +180,40 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # ALLAUTH SETTINGS
 # -------------------------------------------------------------------------------
-ACCOUNT_FORMS = {
-    'signup': 'core.forms.CustomSignupForm'
+# ACCOUNT_FORMS = {
+#     'signup': 'core.forms.CustomSignupForm'
+# }
+
+# DJANGO REST AUTH SETTINGS
+# -------------------------------------------------------------------------------
+REST_USE_JWT = True
+REST_AUTH = {
+    'USE_JWT': True,
+    'JWT_AUTH_COOKIE': 'auth',
+    'JWT_AUTH_REFRESH_COOKIE': 'refresh-token',
+    'USER_DETAILS_SERIALIZER': 'core.serializer.UserSerializer',
 }
+
+# ALLAUTH ADDITIONAL SETTINGS
+# -------------------------------------------------------------------------------
+# ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+# ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_LOGIN_METHODS = {'email'}
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
+ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 500
+ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 300
+
+
+
 
 # Add this to your settings
 AUTH_USER_MODEL = 'core.User'
+
+# CORS SETTINGS
+# -------------------------------------------------------------------------------
+CORS_ALLOW_ALL_ORIGINS = True
+
+

@@ -17,12 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
-from core.views import profile, edit_profile
+from core.views import update_profile, get_profiles
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('profiles/', get_profiles, name='get_profiles'),
     path('accounts/', include('allauth.urls')),
     # path('accounts/confirm-email/<str:key>/', TemplateView.as_view(template_name="account/email_confirm.html"), name='account_confirm_email'),
-    path('accounts/profile/', profile, name='profile'),
-    path('accounts/profile/edit/', edit_profile, name='edit_profile'),
+    # path('accounts/profile/', profile, name='profile'),
+    path('accounts/profile/edit/', update_profile, name='update_profile'),
 ]
