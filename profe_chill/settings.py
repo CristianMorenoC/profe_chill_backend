@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 import environ
 from pathlib import Path
+from datetime import timedelta
 
 # Initialize environment variables
 env = environ.Env()
@@ -38,18 +39,20 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
     'rest_framework',
+    'rest_framework_simplejwt',
 ]
 
 LOCAL_APPS = [
     'core',
 ]
 
-INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+AUTH_APPS = [
+    'rest_framework.authtoken',
+    'dj_rest_auth',
+]
+
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS + AUTH_APPS
 
 # MIDDLEWARE SETTINGS
 # -------------------------------------------------------------------------------
@@ -61,7 +64,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'allauth.account.middleware.AccountMiddleware',
 ]
 
 # TEMPLATES SETTINGS
@@ -100,49 +102,29 @@ DATABASES = {
 # -------------------------------------------------------------------------------
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-# ALLAUTH SETTINGS
-# -------------------------------------------------------------------------------
-SITE_ID = 1
-
-# Account Settings
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = 'none'
-ACCOUNT_CONFIRM_EMAIL_ON_GET = True
-ACCOUNT_PASSWORD_RESET_TIMEOUT = 60  # 1 minute
-
-# Replace the deprecated settings with new rate limits format
-ACCOUNT_RATE_LIMITS = {
-    # Set to None to disable rate limiting
-    'login_failed': None,
-}
-
-# Login/Logout Settings
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
-
-# EMAIL SETTINGS
-# -------------------------------------------------------------------------------
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = env('EMAIL_HOST_USER')
 
 # REST FRAMEWORK SETTINGS
 # -------------------------------------------------------------------------------
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny'
     ]
 }
 REST_SESSION_LOGIN = True
 CSRF_TRUSTED_ORIGINS = ['http://localhost:8000']
+
+# JWT SETTINGS
+# -------------------------------------------------------------------------------
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
 
 # INTERNATIONALIZATION
 # -------------------------------------------------------------------------------
@@ -178,12 +160,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# ALLAUTH SETTINGS
-# -------------------------------------------------------------------------------
-# ACCOUNT_FORMS = {
-#     'signup': 'core.forms.CustomSignupForm'
-# }
-
 # DJANGO REST AUTH SETTINGS
 # -------------------------------------------------------------------------------
 REST_USE_JWT = True
@@ -194,26 +170,12 @@ REST_AUTH = {
     'USER_DETAILS_SERIALIZER': 'core.serializer.UserSerializer',
 }
 
-# ALLAUTH ADDITIONAL SETTINGS
-# -------------------------------------------------------------------------------
-# ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_UNIQUE_EMAIL = True
-# ACCOUNT_USERNAME_REQUIRED = True
-ACCOUNT_LOGIN_METHODS = {'email'}
-ACCOUNT_EMAIL_VERIFICATION = 'none'
-ACCOUNT_CONFIRM_EMAIL_ON_GET = True
-ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
-ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 500
-ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 300
-
-
-
-
 # Add this to your settings
 AUTH_USER_MODEL = 'core.User'
 
 # CORS SETTINGS
 # -------------------------------------------------------------------------------
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 
 
