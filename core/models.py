@@ -14,6 +14,8 @@ class User(AbstractUser):
         choices=ROLES,
         default='student'
     )
+    is_email_verified = models.BooleanField(default=False)
+    verification_token = models.CharField(max_length=64, blank=True, null=True)
 
 # ----------------------
 # Student Model
